@@ -9,7 +9,7 @@ export function getCurrentDay(): string {
     "Saturday",
   ];
   const dayIndex = new Date().getDay();
-  return days[1];
+  return days[dayIndex];
 }
 
 export function formatTime(date: Date): string {

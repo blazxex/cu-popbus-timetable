@@ -43,7 +43,7 @@ export default function Home() {
             ))}
           </div>
         )}
-        {!isSunday && (
+        {
           <>
             {/* <DaySelector onDayChange={setSelectedDay} /> */}
 
@@ -58,7 +58,7 @@ export default function Home() {
               </Button>
             </div>
           </>
-        )}
+        }
       </div>
 
       <AllTimesModal
