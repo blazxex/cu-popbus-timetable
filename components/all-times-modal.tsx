@@ -1,57 +1,65 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { Button } from "@/components/ui/button"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog"
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { formatAMPM } from "@/lib/date-utils"
+import { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { formatAMPM } from "@/lib/date-utils";
 
 interface AllTimesModalProps {
-  isOpen: boolean
-  onClose: () => void
+  isOpen: boolean;
+  onClose: () => void;
 }
 
 interface TimeData {
-  [hour: string]: string[]
+  [hour: string]: string[];
 }
 
 interface TimetableData {
   weekday: {
-    [line: string]: TimeData
-  }
+    [line: string]: TimeData;
+  };
   Saturday: {
-    [line: string]: TimeData
-  }
+    [line: string]: TimeData;
+  };
 }
 
 export function AllTimesModal({ isOpen, onClose }: AllTimesModalProps) {
-  const [timetable, setTimetable] = useState<TimetableData | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [selectedLine, setSelectedLine] = useState("Line 1")
-  const [selectedDay, setSelectedDay] = useState<"weekday" | "Saturday">("weekday")
+  const [timetable, setTimetable] = useState<TimetableData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [selectedLine, setSelectedLine] = useState("Line 1");
+  const [selectedDay, setSelectedDay] = useState<"weekday" | "Saturday">(
+    "weekday"
+  );
 
   useEffect(() => {
     const fetchTimetable = async () => {
-      if (!isOpen) return
+      if (!isOpen) return;
 
       try {
-        setLoading(true)
-        const response = await fetch("/timetable.json")
-        const data = await response.json()
-        setTimetable(data)
+        setLoading(true);
+        const response = await fetch("/timetable.json");
+        const data = await response.json();
+        setTimetable(data);
       } catch (error) {
-        console.error("Failed to fetch timetable:", error)
+        console.error("Failed to fetch timetable:", error);
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
+    };
 
-    fetchTimetable()
-  }, [isOpen])
+    fetchTimetable();
+  }, [isOpen]);
 
-  if (!timetable) return null
+  if (!timetable) return null;
 
-  const lineData = timetable[selectedDay][selectedLine]
+  const lineData = timetable[selectedDay][selectedLine];
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
@@ -62,7 +70,11 @@ export function AllTimesModal({ isOpen, onClose }: AllTimesModalProps) {
 
         <div className="py-4">
           <div className="flex flex-col gap-4 sm:flex-row">
-            <Tabs defaultValue={selectedLine} onValueChange={setSelectedLine} className="w-full">
+            <Tabs
+              defaultValue={selectedLine}
+              onValueChange={setSelectedLine}
+              className="w-full"
+            >
               <TabsList className="grid w-full grid-cols-4">
                 <TabsTrigger value="Line 1">Line 1</TabsTrigger>
                 <TabsTrigger value="Line 2">Line 2</TabsTrigger>
@@ -73,7 +85,9 @@ export function AllTimesModal({ isOpen, onClose }: AllTimesModalProps) {
 
             <Tabs
               defaultValue={selectedDay}
-              onValueChange={(value) => setSelectedDay(value as "weekday" | "Saturday")}
+              onValueChange={(value) =>
+                setSelectedDay(value as "weekday" | "Saturday")
+              }
               className="w-full"
             >
               <TabsList className="grid w-full grid-cols-2">
@@ -90,12 +104,14 @@ export function AllTimesModal({ isOpen, onClose }: AllTimesModalProps) {
           ) : (
             <div className="mt-6 space-y-6">
               {Object.keys(lineData)
-                .sort()
+                .sort((a, b) => Number(a) - Number(b))
                 .map((hour) => (
                   <div key={hour} className="animate-fade-in">
                     <h3 className="mb-2 text-lg font-medium text-gray-800 dark:text-gray-200">
-                      {Number.parseInt(hour) > 12 ? Number.parseInt(hour) - 12 : hour}:00{" "}
-                      {Number.parseInt(hour) >= 12 ? "PM" : "AM"}
+                      {Number.parseInt(hour) > 12
+                        ? Number.parseInt(hour) - 12
+                        : hour}
+                      :00 {Number.parseInt(hour) >= 12 ? "PM" : "AM"}
                     </h3>
                     <div className="grid grid-cols-3 gap-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8">
                       {lineData[hour].map((minute, index) => (
@@ -104,7 +120,10 @@ export function AllTimesModal({ isOpen, onClose }: AllTimesModalProps) {
                           className="flex items-center justify-center p-2 transition-all duration-300 bg-white border rounded-md shadow-sm dark:bg-gray-800 border-pink-100 dark:border-pink-900 hover:border-pink-300 dark:hover:border-pink-700"
                         >
                           <span className="text-sm font-medium text-pink-600 dark:text-pink-400">
-                            {formatAMPM(Number.parseInt(hour), Number.parseInt(minute.trim()))}
+                            {formatAMPM(
+                              Number.parseInt(hour),
+                              Number.parseInt(minute.trim())
+                            )}
                           </span>
                         </div>
                       ))}
@@ -122,5 +141,5 @@ export function AllTimesModal({ isOpen, onClose }: AllTimesModalProps) {
         </DialogFooter>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

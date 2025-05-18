@@ -22,7 +22,6 @@ export const busStops = [
 // Randomly assign stops to each line
 function getRandomStops(count: number) {
   const shuffled = [...busStops].sort(() => 0.5 - Math.random());
-  console.log(shuffled);
   return shuffled.slice(0, count);
 }
 
