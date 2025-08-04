@@ -23,9 +23,7 @@ export default function Home() {
         <h1 className="text-3xl font-bold text-center text-pink-500 md:text-4xl lg:text-5xl animate-fade-in">
           CU POP Bus Schedule
         </h1>
-        <p className="mt-4 text-lg text-center text-gray-600 dark:text-gray-400 animate-fade-in-delay">
-          School Break
-        </p>
+
         <p className="mt-4 text-lg text-center text-gray-600 dark:text-gray-400 animate-fade-in-delay">
           Current day: <span className="font-semibold">{currentDay}</span>
         </p>
